@@ -1,6 +1,9 @@
 # Documents
 support documents for minmeeting
 
+## minmeeting　ログイン画面
+https://x.minmeeting.com/
+
 ## ドキュメント一覧
 | ドキュメント名 | 概要 |
 |---|---|
