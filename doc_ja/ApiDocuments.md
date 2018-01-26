@@ -7,6 +7,10 @@ MinMeetingはいくつかのWeb APIをβ公開しています。
 
 現状、このAPI仕様はβ公開であり、開発を進めていく上では、仕様変更をせざるを得ない場合が出てくるかもしれませんので、ご了承ください。
 
+
+
+
+
 # 1. APIの共通事項
 
 ## APIトークンの発行
@@ -19,10 +23,11 @@ https://x.minmeeting.com
 ## APIのベースURLと認証方式（共通ヘッダー）
 ### ベースURL
 https://x.minmeeting.com/api
+
 ### 認証方式（共通ヘッダー）
 リクエストヘッダーに下記をセットしてください。
 
-| key | value |
+| Key | Value |
 |---|---|
 | Content-Type | application/json |
 | X-Minmeeting-API-Token | APIトークン |
@@ -37,22 +42,25 @@ https://x.minmeeting.com/api
 | カード | /meetings/:meetingId/agendas/:agendaId/cards | Webhook |
 
 
+
+
+
 # 2. REST API
 
 ## meeting作成と一時URLの取得
-### リクエスト
-メソッド・パス
+### Request
+#### Method/Path
 
-| メソッド | パス |
+| Method | Path |
 |---|---|
 | POST | /meetings |
 
-サンプルリクエスト
+#### Sample
 ```
 curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: [your api token]" https://x.minmeeting.com/api/meetings
 ```
 
-### レスポンス
+### Response
 ```.json
 {"url":"https://x.minmeeting.com/meetings/xxxxxx/token/xxxxxx"}
 ```
@@ -60,47 +68,52 @@ curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: [you
 ## 一時URLの再発行
 ミーティング参加のための一時URLは、ミーティングの参加者が発行することができますが、一定時間以内に誰も参加しないと画面上からは再度URLを発行することができません。そこで、API経由で一時URLを再発行するAPIを設けました。
 
-### リクエスト
-メソッド・パス
+### Request
+#### Method/Path
 
-| メソッド | パス |
+| Method | Path |
 |---|---|
 | PUT | /meetings/:meetingId |
 
-サンプルリクエスト
+#### Sample
 ```
 curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: [your api token]" https://x.minmeeting.com/api/meetings/yourMeetingId
 ```
 
-### レスポンス
+### Response
 ```.json
 {"url":"https://x.minmeeting.com/meetings/xxxxxx/token/xxxxxx"}
 ```
 
 ## メッセージの投稿
-### リクエスト
-メソッド・パス
+### Request
+#### Method/Path
 
-| メソッド | パス |
+| Method | Path |
 |---|---|
 | POST | /meetings/:meetingId/messages |
 
-Body
+#### Body
 
-| key | value | type | required |
+| Key | Value | Type | Required |
 |---|---|---|---|
 | text | メッセージ本文。最大1000文字。 | string | ○ |
 | author | 作成者表示名 | string |  |
 
-サンプルリクエスト
+#### Sample
 ```
 curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: [your api token]" https://x.minmeeting.com/api/meetings/yourMeetingId/messages
 ```
 
-### レスポンス
+### Response
 ```.json
 {"messageId": "メッセージID"}
 ```
+
+
+
+
+
 
 # 3. Webhook
 minmeetingで発生したイベントを設定画面で指定したURLに通知します。通知はPOSTメソッドで行います。
@@ -110,7 +123,7 @@ Webhookのリクエストがminmeetingから発行された正統なものかを
 トークンが自分のものと一致することをもって、正統なリクエストと判定してください。
 検証用トークンは設定画面にて取得することができます。
 
-| key | value |
+| Key | Value |
 |---|---|
 | Content-Type | application/json |
 | X-Minmeeting-Verification-Token | 検証用トークン |
@@ -118,32 +131,32 @@ Webhookのリクエストがminmeetingから発行された正統なものかを
 ## メッセージのWebhook
 タイムラインにメッセージが投稿されたタイミングで、指定したURLにPOSTします。
 
-### リクエスト
+### Request
 
-| key | value | type |
+| Key | Value | Type |
 |---|---|---|
 | text | メッセージ本文。最大1000文字。 | string |
 | author | 作成者表示名 | string |
 
-### レスポンス
+### Response
 リクエストに対し、ステータスコード200で下記のようにレスポンスを返すと、メッセージを投稿することもできます。
 
-ステータスコード
+#### Statu Code
 
 ```
 200
 ```
 
-レスポンスヘッダ
+#### Response Header
 
-| key | value |
+| Key | Value |
 |---|---|
 | Content-Type | application/json |
 | X-Minmeeting-API-Token | APIトークン |
 
-Body
+#### Body
 
-| key | value | type | required |
+| Key | Value | Type | Required |
 |---|---|---|---|
 | text | メッセージ本文。最大1000文字。 | string | ○ |
 | author | 作成者表示名 | string |  |
