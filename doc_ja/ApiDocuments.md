@@ -1,5 +1,5 @@
-# MinMeeting API仕様（β）
-MinMeetingはいくつかのWeb APIをβ公開しています。
+# minmeeting API仕様（β）
+minmeetingはいくつかのWeb APIをβ公開しています。
 このAPIを用いると、例えば下記のようなことができます。
 
 - オンラインスケジュールと連携して、会議の10分前にミーティング参加URLを自動的に関係者に送信するようなbotを作成する。
@@ -125,7 +125,9 @@ Webhookのリクエストがminmeetingから発行された正統なものかを
 
 | Key | Value | Type |
 |---|---|---|
-| text | メッセージ本文。最大1000文字。 | string |
+| meetingId | ミーティングID | string |
+| messageId | メッセージID | string |
+| text | メッセージ本文 | string |
 | author | 作成者表示名 | string |
 
 ### Response
@@ -138,6 +140,7 @@ Webhookのリクエストがminmeetingから発行された正統なものかを
 ```
 
 #### Response Header
+レスポンスでメッセージ投稿をする場合は下記の通りヘッダーをセットしてください。メッセージ投稿をしない場合は不要です。
 
 | Key | Value |
 |---|---|
@@ -145,9 +148,51 @@ Webhookのリクエストがminmeetingから発行された正統なものかを
 | X-Minmeeting-API-Token | APIトークン |
 
 #### Body
+レスポンスでメッセージ投稿をする場合は下記の通りBodyをセットしてください。メッセージ投稿をしない場合は不要です。
 
 | Key | Value | Type | Required |
 |---|---|---|---|
 | text | メッセージ本文。最大1000文字。 | string | ○ |
 | author | 作成者表示名 | string |  |
 
+
+## アジェンダのWebhook
+ユーザがアジェンダの出力を選択したタイミングで、指定したURLにPOSTします。
+
+### Request
+
+| Key | Value | Type |
+|---|---|---|
+| meetingId | ミーティングID | string |
+| agendaId | アジェンダID | string |
+| title | アジェンダタイトル | string |
+| duration | 予定時間（分） | number |
+
+### Response
+#### Statu Code
+
+```
+200
+```
+
+## カードのWebhook
+ユーザがカードの出力を選択したタイミングで、指定したURLにPOSTします。
+
+### Request
+
+| Key | Value | Type |
+|---|---|---|
+| meetingId | ミーティングID | string |
+| agendaId | アジェンダID | string |
+| cardId | カードID | string |
+| text | カード本文 | string |
+| color | カード色 | object |
+| reactions | リアクション | object |
+| tags | タグ | object |
+
+### Response
+#### Statu Code
+
+```
+200
+```
