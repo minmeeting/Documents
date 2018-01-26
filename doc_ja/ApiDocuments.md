@@ -7,10 +7,7 @@ MinMeetingはいくつかのWeb APIをβ公開しています。
 
 現状、このAPI仕様はβ公開であり、開発を進めていく上では、仕様変更をせざるを得ない場合が出てくるかもしれませんので、ご了承ください。
 
-
-
-
-
+<BR><BR><BR>
 # 1. APIの共通事項
 
 ## APIトークンの発行
@@ -41,10 +38,7 @@ https://x.minmeeting.com/api
 | アジェンダ | /meetings/:meetingId/agendas | Webhook |
 | カード | /meetings/:meetingId/agendas/:agendaId/cards | Webhook |
 
-
-
-
-
+<BR><BR><BR>
 # 2. REST API
 
 ## meeting作成と一時URLの取得
@@ -110,11 +104,7 @@ curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: [your
 {"messageId": "メッセージID"}
 ```
 
-
-
-
-
-
+<BR><BR><BR>
 # 3. Webhook
 minmeetingで発生したイベントを設定画面で指定したURLに通知します。通知はPOSTメソッドで行います。
 
