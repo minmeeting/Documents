@@ -4,6 +4,10 @@ minmeetingはいくつかのWeb APIをβ公開しています。
 
 - オンラインスケジュールと連携して、会議の10分前にミーティング参加URLを自動的に関係者に送信するようなbotを作成する。
 - グループチャットアプリと連携して、「会議をはじめるよ」とつぶやくと、自動的にミーティング参加URLが送られてくるようなbotを作成する。
+- minmeetingでの発言に応じて、参考情報を表示したり、問いかけをするファシリテーションbotを作成する。
+- グループチャットの対話内容をminmeetingに連携してアジェンダごとに整理し、議事録を作る。
+- （ユーザが操作をしたタイミングで）minmeetingの内容を議事録として、外部のノートアプリに連携する。
+- （ユーザが操作をしたタイミングで）minmeetingの内容を外部のToDoアプリに連携する。
 
 現状、このAPI仕様はβ公開であり、開発を進めていく上では、仕様変更をせざるを得ない場合が出てくるかもしれませんので、ご了承ください。
 
@@ -34,9 +38,9 @@ https://x.minmeeting.com/api
 | 名称 | パス | 対応種類 |
 |---|---|---|
 | meeting作成 | /meetings | POST, PUT |
-| タイムラインのメッセージ | /meetings/:meetingId/messages | Webhook, POST |
-| アジェンダ | /meetings/:meetingId/agendas | Webhook |
-| カード | /meetings/:meetingId/agendas/:agendaId/cards | Webhook |
+| アジェンダ | /meetings/:meetingId/agendas | Webhook, POST, PUT |
+| カード | /meetings/:meetingId/agendas/:agendaId/cards | Webhook, POST, PUT |
+| タイムラインのメッセージ | /meetings/:meetingId/messages | Webhook, POST, PUT |
 
 <BR><BR><BR>
 # 2. REST API
@@ -79,58 +83,56 @@ curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${you
 {"url":"https://x.minmeeting.com/meetings/xxxxxx/token/xxxxxx"}
 ```
 
-## メッセージの投稿
+## アジェンダの投稿
 ### Request
 #### Method/Path
 
 | Method | Path |
 |---|---|
-| POST | /meetings/:meetingId/messages |
+| POST | /meetings/:meetingId/agendas |
 
 #### Body
 
 | Key | Value | Type | Required |
 |---|---|---|---|
-| text | メッセージ本文。最大1000文字。 | string |  |
-| author | 作成者表示名。最大100文字。 | string |  |
-
-いずれかのフィールドは必須。
+| title | アジェンダタイトル。最大100文字。 | string | ○ |
+| duration | アジェンダの予定時間（分） | number |  |
 
 #### Sample
 ```
-curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" -d '{"text": "こんにちは"}' https://x.minmeeting.com/api/meetings/${yourMeetingId}/messages
+curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" -d '{"title": "アジェンダその1", "duration": 2}' https://x.minmeeting.com/api/meetings/${yourMeetingId}/agendas
 ```
 
 ### Response
 ```.json
-{"meetingId": "ミーティングID", "messageId": "メッセージID"}
+{"meetingId": "ミーティングID", "agendaId": "アジェンダID"}
 ```
 
-## メッセージの更新
+## アジェンダの更新
 ### Request
 #### Method/Path
 
 | Method | Path |
 |---|---|
-| PUT | /meetings/:meetingId/messages/:messageId |
+| PUT | /meetings/:meetingId/agendas/:agendaId |
 
 #### Body
 
 | Key | Value | Type | Required |
 |---|---|---|---|
-| text | メッセージ本文。最大1000文字。 | string |  |
-| author | 作成者表示名。最大100文字。 | string |  |
+| title | アジェンダタイトル。最大100文字。 | string |  |
+| duration | アジェンダの予定時間（分）。最大60分。 | number |  |
 
 いずれかのフィールドは必須。
 
 #### Sample
 ```
-curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" -d '{"text": "こんにちは"}' https://x.minmeeting.com/api/meetings/${yourMeetingId}/messages/${messageIdToUpdate}
+curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" -d '{"title": "アジェンダその1", "duration": 2}' https://x.minmeeting.com/api/meetings/${yourMeetingId}/agendas/${agendaIdToUpdate}
 ```
 
 ### Response
 ```.json
-{"meetingId": "ミーティングID", "messageId": "メッセージID"}
+{"meetingId": "ミーティングID", "agendaId": "アジェンダID"}
 ```
 
 ## カードの投稿
@@ -187,6 +189,59 @@ curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${you
 {"meetingId": "ミーティングID", "agendaId": "アジェンダID", "cardId": "カードID"}
 ```
 
+## メッセージの投稿
+### Request
+#### Method/Path
+
+| Method | Path |
+|---|---|
+| POST | /meetings/:meetingId/messages |
+
+#### Body
+
+| Key | Value | Type | Required |
+|---|---|---|---|
+| text | メッセージ本文。最大1000文字。 | string |  |
+| author | 作成者表示名。最大100文字。 | string |  |
+
+いずれかのフィールドは必須。
+
+#### Sample
+```
+curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" -d '{"text": "こんにちは"}' https://x.minmeeting.com/api/meetings/${yourMeetingId}/messages
+```
+
+### Response
+```.json
+{"meetingId": "ミーティングID", "messageId": "メッセージID"}
+```
+
+## メッセージの更新
+### Request
+#### Method/Path
+
+| Method | Path |
+|---|---|
+| PUT | /meetings/:meetingId/messages/:messageId |
+
+#### Body
+
+| Key | Value | Type | Required |
+|---|---|---|---|
+| text | メッセージ本文。最大1000文字。 | string |  |
+| author | 作成者表示名。最大100文字。 | string |  |
+
+いずれかのフィールドは必須。
+
+#### Sample
+```
+curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" -d '{"text": "こんにちは"}' https://x.minmeeting.com/api/meetings/${yourMeetingId}/messages/${messageIdToUpdate}
+```
+
+### Response
+```.json
+{"meetingId": "ミーティングID", "messageId": "メッセージID"}
+```
 
 <BR><BR><BR>
 # 3. Webhook
