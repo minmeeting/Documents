@@ -96,7 +96,7 @@ curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${you
 | Key | Value | Type | Required |
 |---|---|---|---|
 | title | アジェンダタイトル。最大100文字。 | string | ○ |
-| duration | アジェンダの予定時間（分） | number |  |
+| duration | アジェンダの予定時間（分）。最大60分。 | number |  |
 
 #### Sample
 ```
@@ -105,7 +105,7 @@ curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yo
 
 ### Response
 ```.json
-{"meetingId": "ミーティングID", "agendaId": "アジェンダID"}
+{"meetingId": "ミーティングID", "agendaId": "アジェンダID", "title": "アジェンダタイトル", "duration": "アジェンダの予定時間", "agendaNumber": "アジェンダ番号", "order": "表示順", "at": "作成日時（UNIXタイムスタンプ：ミリ秒）"}
 ```
 
 ## アジェンダの更新
@@ -147,7 +147,7 @@ curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${you
 
 | Key | Value | Type | Required |
 |---|---|---|---|
-| text | メッセージ本文。最大1000文字。 | string |  |
+| text | カード本文。最大1000文字。 | string |  |
 | author | 作成者表示名。最大100文字。 | string |  |
 
 いずれかのフィールドは必須。
@@ -159,7 +159,7 @@ curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yo
 
 ### Response
 ```.json
-{"meetingId": "ミーティングID", "agendaId": "アジェンダID", "cardId": "カードID"}
+{"meetingId": "ミーティングID", "agendaId": "アジェンダID", "cardId": "カードID", "text": "カード本文", "author": "作成者", "order": "表示順", "at": "作成日時（UNIXタイムスタンプ：ミリ秒）"}
 ```
 
 ## カードの更新
@@ -213,7 +213,7 @@ curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yo
 
 ### Response
 ```.json
-{"meetingId": "ミーティングID", "messageId": "メッセージID"}
+{"meetingId": "ミーティングID", "messageId": "メッセージID", "text": "メッセージ本文", "author": "作成者", "at": "作成日時（UNIXタイムスタンプ：ミリ秒）"}
 ```
 
 ## メッセージの更新
