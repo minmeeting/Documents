@@ -38,8 +38,8 @@ https://x.minmeeting.com/api
 | 名称 | パス | 対応種類 |
 |---|---|---|
 | meeting作成 | /meetings | POST, PUT |
-| アジェンダ | /meetings/:meetingId/agendas | Webhook, POST, PUT |
-| カード | /meetings/:meetingId/agendas/:agendaId/cards | Webhook, POST, PUT |
+| アジェンダ | /meetings/:meetingId/agendas | Webhook（将来）, POST, PUT |
+| カード | /meetings/:meetingId/agendas/:agendaId/cards | Webhook（将来）, POST, PUT |
 | タイムラインのメッセージ | /meetings/:meetingId/messages | Webhook, POST, PUT |
 
 <BR><BR><BR>
@@ -295,7 +295,7 @@ Webhookのリクエストがminmeetingから発行された正統なものかを
 | author | 作成者表示名 | string |  |
 
 
-## アジェンダのWebhook
+## アジェンダのWebhook（将来）
 ユーザがアジェンダの出力を選択したタイミングで、指定したURLにPOSTします。
 
 ### Request
@@ -314,7 +314,7 @@ Webhookのリクエストがminmeetingから発行された正統なものかを
 200
 ```
 
-## カードのWebhook
+## カードのWebhook（将来）
 ユーザがカードの出力を選択したタイミングで、指定したURLにPOSTします。
 
 ### Request
