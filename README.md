@@ -1,8 +1,11 @@
 # Documents
 support documents for minmeeting
 
+## minmeetingプロダクトサイト
+https://minmeeting.jp/
+
 ## minmeeting　ログイン画面
-https://x.minmeeting.com/
+https://ten.minmeeting.com/
 
 ## ドキュメント一覧
 | ドキュメント名 | 概要 |
