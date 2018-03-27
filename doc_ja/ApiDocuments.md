@@ -16,14 +16,14 @@ minmeetingはいくつかのWeb APIをβ公開しています。
 
 ## APIトークンの発行
 1. googleでログイン<BR>
-https://x.minmeeting.com
+https://ten.minmeeting.com
 1. 左メニュー＞設定＞API発行
 
 - 匿名認証ではAPIの発行はできません。
 
 ## APIのベースURLと認証方式（共通ヘッダー）
 ### ベースURL
-https://x.minmeeting.com/api
+https://ten.minmeeting.com/api
 
 ### 認証方式（共通ヘッダー）
 リクエストヘッダーに下記をセットしてください。
@@ -55,12 +55,12 @@ https://x.minmeeting.com/api
 
 #### Sample
 ```
-curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" https://x.minmeeting.com/api/meetings
+curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" https://ten.minmeeting.com/api/meetings
 ```
 
 ### Response
 ```.json
-{"url":"https://x.minmeeting.com/meetings/xxxxxx/token/xxxxxx"}
+{"url":"https://ten.minmeeting.com/meetings/xxxxxx/token/xxxxxx"}
 ```
 
 ## 一時URLの再発行
@@ -75,12 +75,12 @@ curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yo
 
 #### Sample
 ```
-curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" https://x.minmeeting.com/api/meetings/${yourMeetingId}
+curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" https://ten.minmeeting.com/api/meetings/${yourMeetingId}
 ```
 
 ### Response
 ```.json
-{"url":"https://x.minmeeting.com/meetings/xxxxxx/token/xxxxxx"}
+{"url":"https://ten.minmeeting.com/meetings/xxxxxx/token/xxxxxx"}
 ```
 
 ## アジェンダの投稿
@@ -100,7 +100,7 @@ curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${you
 
 #### Sample
 ```
-curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" -d '{"title": "アジェンダその1", "duration": 2}' https://x.minmeeting.com/api/meetings/${yourMeetingId}/agendas
+curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" -d '{"title": "アジェンダその1", "duration": 2}' https://ten.minmeeting.com/api/meetings/${yourMeetingId}/agendas
 ```
 
 ### Response
@@ -127,7 +127,7 @@ curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yo
 
 #### Sample
 ```
-curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" -d '{"title": "アジェンダその1", "duration": 2}' https://x.minmeeting.com/api/meetings/${yourMeetingId}/agendas/${agendaIdToUpdate}
+curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" -d '{"title": "アジェンダその1", "duration": 2}' https://ten.minmeeting.com/api/meetings/${yourMeetingId}/agendas/${agendaIdToUpdate}
 ```
 
 ### Response
@@ -154,7 +154,7 @@ curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${you
 
 #### Sample
 ```
-curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" -d '{"text": "こんにちは"}' https://x.minmeeting.com/api/meetings/${yourMeetingId}/agendas/${agendaIdToUpdate}/cards
+curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" -d '{"text": "こんにちは"}' https://ten.minmeeting.com/api/meetings/${yourMeetingId}/agendas/${agendaIdToUpdate}/cards
 ```
 
 ### Response
@@ -181,7 +181,7 @@ curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yo
 
 #### Sample
 ```
-curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" -d '{"text": "こんにちは"}' https://x.minmeeting.com/api/meetings/${yourMeetingId}/agendas/${agendaIdToUpdate}/cards/${cardIdToUpdate}
+curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" -d '{"text": "こんにちは"}' https://ten.minmeeting.com/api/meetings/${yourMeetingId}/agendas/${agendaIdToUpdate}/cards/${cardIdToUpdate}
 ```
 
 ### Response
@@ -208,7 +208,7 @@ curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${you
 
 #### Sample
 ```
-curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" -d '{"text": "こんにちは"}' https://x.minmeeting.com/api/meetings/${yourMeetingId}/messages
+curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" -d '{"text": "こんにちは"}' https://ten.minmeeting.com/api/meetings/${yourMeetingId}/messages
 ```
 
 ### Response
@@ -235,7 +235,7 @@ curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yo
 
 #### Sample
 ```
-curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" -d '{"text": "こんにちは"}' https://x.minmeeting.com/api/meetings/${yourMeetingId}/messages/${messageIdToUpdate}
+curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" -d '{"text": "こんにちは"}' https://ten.minmeeting.com/api/meetings/${yourMeetingId}/messages/${messageIdToUpdate}
 ```
 
 ### Response
