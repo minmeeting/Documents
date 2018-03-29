@@ -38,13 +38,73 @@ https://ten.minmeeting.com/api
 
 | 名称 | パス | 対応種類 |
 |---|---|---|
-| ミーティング | /meetings | POST, PUT |
-| アジェンダ | /meetings/:meetingId/agendas | Webhook（将来）, POST, PUT |
-| カード | /meetings/:meetingId/agendas/:agendaId/cards | Webhook（将来）, POST, PUT |
-| タイムラインのメッセージ | /meetings/:meetingId/messages | Webhook, POST, PUT |
+| ミーティング | /meetings | Webhook（※将来）, GET（※）, POST, PUT |
+| アジェンダ | /meetings/:meetingId/agendas | Webhook（※将来）, GET（※）, POST, PUT |
+| カード | /meetings/:meetingId/agendas/:agendaId/cards | Webhook（※将来）, GET（※）, POST, PUT |
+| タイムラインのメッセージ | /meetings/:meetingId/messages | Webhook（※）, GET（※）, POST, PUT |
+
+「将来」と書いてあるAPIは現在まだ対応していません。
+
+### 制限事項
+無料プランでのご利用の場合、下記の制限があります。
+- APIの呼び出し回数は1週間に50回までとします。
+- 上記API一覧に「※」マークが付いているAPIは、ご利用いただけません。
 
 <BR><BR><BR>
+---
+
 # 2. REST API
+
+## meeting統計とアジェンダ・カード一覧の取得
+### Request
+#### Method/Path
+
+| Method | Path |
+|---|---|
+| GET | /meetings/:meetingId |
+
+#### Parameters
+
+| Key | Value | Required |
+|---|---|---|
+| requestAgendas | true: アジェンダデータを取得する。 false（または指定なし）: アジェンダデータを取得しない。 |  |
+| requestCards | true: カードデータを取得する。false（または指定なし）: カードデータを取得しない。 |  |
+
+#### Sample
+```
+curl -X GET -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}"  https://ten.minmeeting.com/api/meetings/${yourMeetingId}
+```
+
+### Response
+```.json
+{
+  "statistics": {
+    "title": "ミーティングタイトル",
+    "durationInMillisec"; "会議時間（ミリ秒）",
+    "estimatedInMillisec": "会議予定時間（ミリ秒）",
+    "messagesCount": "メッセージ件数（発言数）",
+    "cardsCount": "カード件数（議事録としてアジェンダ上に整理された件数）",
+    "cardReactionsCount": "リアクション件数",
+    "members": {"$userId": "ユーザ名"}
+  },
+  "agendas": {
+    "$agendaId": {
+      "title": "アジェンダタイトル",
+      "duration": "予定時間（分）",
+      "order": "表示順",
+      "at": "作成日時（UNIXタイムスタンプ：ミリ秒）",
+      "cards": {
+        "$cardId": {
+          "text": "タイトル",
+          "author": "作成者名",
+          "by": "作成者ID",
+          "at": "作成時刻（UNIXタイムスタンプ：ミリ秒）"
+        }
+      }
+    }
+  }
+}
+```
 
 ## meeting作成と一時URLの取得
 ### Request
@@ -54,14 +114,33 @@ https://ten.minmeeting.com/api
 |---|---|
 | POST | /meetings |
 
+#### Body
+
+| Key | SubKey | Value | Type | Required |
+|---|---|---|---|---|
+| agendas | - | アジェンダ一覧 | array |  |
+| - | title | アジェンダタイトル。最大100文字。 | string | ○ |
+| - | duration | アジェンダの予定時間（分）。最大60分。 | number |  |
+
+- 一時URLを発行したいだけならbodyは省略可。
+- アジェンダは登録したい順番に従って配列で記述する。
+
 #### Sample
+一時URLのみ発行する場合
 ```
-curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" https://ten.minmeeting.com/api/meetings
+curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}"  https://ten.minmeeting.com/api/meetings
+```
+
+ミーティング作成と同時にアジェンダを登録する場合
+```
+curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" -d '{"agendas": [{"title": "アジェンダその1", "duration": 2}, {"title": "アジェンダその2", "duration": 1}]}' https://ten.minmeeting.com/api/meetings
 ```
 
 ### Response
 ```.json
-{"url":"https://ten.minmeeting.com/meetings/xxxxxx/token/xxxxxx"}
+{
+  "url":"https://ten.minmeeting.com/meetings/xxxxxx/token/xxxxxx"
+}
 ```
 
 ## 一時URLの再発行
@@ -74,14 +153,71 @@ curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yo
 |---|---|
 | PUT | /meetings/:meetingId |
 
+#### Body
+| Key | SubKey | Value | Type | Required |
+|---|---|---|---|---|
+| agendas | - | アジェンダ一覧 | array |  |
+| - | title | アジェンダタイトル。最大100文字。 | string | ○ |
+| - | duration | アジェンダの予定時間（分）。最大60分。 | number |  |
+
+- 一時URLを再発行したいだけならbodyは省略可。
+- アジェンダは登録したい順番に従って配列で記述する。
+- 既存のアジェンダは変更せず、追加をする。
+
 #### Sample
+一時URLを再発行したい場合
 ```
 curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" https://ten.minmeeting.com/api/meetings/${yourMeetingId}
 ```
 
+アジェンダを追加したい場合
+```
+curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" -d '{"agendas": [{"title": "アジェンダその1", "duration": 2}, {"title": "アジェンダその2", "duration": 1}]}' https://ten.minmeeting.com/api/meetings/${yourMeetingId}
+```
+
 ### Response
 ```.json
-{"url":"https://ten.minmeeting.com/meetings/xxxxxx/token/xxxxxx"}
+{
+  "url":"https://ten.minmeeting.com/meetings/xxxxxx/token/xxxxxx"
+}
+```
+
+---
+
+## アジェンダの取得
+### Request
+#### Method/Path
+
+| Method | Path |
+|---|---|
+| GET | /meetings/:meetingId/agendas/:agendaId |
+
+#### Parameters
+なし
+
+#### Sample
+```
+curl -X GET -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" https://ten.minmeeting.com/api/meetings/${yourMeetingId}/agendas/${yourAgendId}
+```
+
+### Response
+```.json
+{
+  "meetingId": "ミーティングID",
+  "agendaId": "アジェンダID",
+  "title": "アジェンダタイトル",
+  "duration": "予定時間（分）",
+  "order": "表示順",
+  "at": "作成日時（UNIXタイムスタンプ：ミリ秒）",
+  "cards": {
+    "$cardId": {
+      "text": "タイトル",
+      "author": "作成者名",
+      "by": "作成者ID",
+      "at": "作成時刻（UNIXタイムスタンプ：ミリ秒）"
+    }
+  }
+}
 ```
 
 ## アジェンダの投稿
@@ -106,7 +242,15 @@ curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yo
 
 ### Response
 ```.json
-{"meetingId": "ミーティングID", "agendaId": "アジェンダID", "title": "アジェンダタイトル", "duration": "アジェンダの予定時間", "agendaNumber": "アジェンダ番号", "order": "表示順", "at": "作成日時（UNIXタイムスタンプ：ミリ秒）"}
+{
+  "meetingId": "ミーティングID",
+  "agendaId": "アジェンダID",
+  "title": "アジェンダタイトル",
+  "duration": "アジェンダの予定時間",
+  "agendaNumber": "アジェンダ番号",
+  "order": "表示順",
+  "at": "作成日時（UNIXタイムスタンプ：ミリ秒）"
+}
 ```
 
 ## アジェンダの更新
@@ -133,7 +277,78 @@ curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${you
 
 ### Response
 ```.json
-{"meetingId": "ミーティングID", "agendaId": "アジェンダID"}
+{
+  "meetingId": "ミーティングID",
+  "agendaId": "アジェンダID"
+}
+```
+
+---
+
+## カード一覧の取得
+### Request
+#### Method/Path
+
+| Method | Path |
+|---|---|
+| GET | /meetings/:meetingId/agendas/:agendaId/cards |
+
+#### Parameters
+
+| Key | Value | Required |
+|---|---|---|---|
+| page | ページ番号。1ページから始まる。 |  |
+| limit | 1ページあたりの件数。デフォルトは20件。 |  |
+
+#### Sample
+```
+curl -X GET -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" https://ten.minmeeting.com/api/meetings/${yourMeetingId}/agendas/${agendaId}/cards
+```
+
+### Response
+```.json
+{
+  "meetingId": "ミーティングID",
+  "agendaId": "アジェンダID",
+  "cards": [
+    {
+      "cardId": "カードID",
+      "text": "カード本文",
+      "author": "作成者",
+      "order": "表示順",
+      "at": "作成日時（UNIXタイムスタンプ：ミリ秒）"
+    }
+  ]
+}
+```
+
+## カードの取得
+### Request
+#### Method/Path
+
+| Method | Path |
+|---|---|
+| GET | /meetings/:meetingId/agendas/:agendaId/cards/:cardId |
+
+#### Parameters
+なし
+
+#### Sample
+```
+curl -X GET -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}" https://ten.minmeeting.com/api/meetings/${yourMeetingId}/agendas/${agendaId}/cards/${cardId}
+```
+
+### Response
+```.json
+{
+  "meetingId": "ミーティングID",
+  "agendaId": "アジェンダID",
+  "cardId": "カードID",
+  "text": "カード本文",
+  "author": "作成者",
+  "order": "表示順",
+  "at": "作成日時（UNIXタイムスタンプ：ミリ秒）"
+}
 ```
 
 ## カードの投稿
@@ -160,7 +375,15 @@ curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yo
 
 ### Response
 ```.json
-{"meetingId": "ミーティングID", "agendaId": "アジェンダID", "cardId": "カードID", "text": "カード本文", "author": "作成者", "order": "表示順", "at": "作成日時（UNIXタイムスタンプ：ミリ秒）"}
+{
+  "meetingId": "ミーティングID",
+  "agendaId": "アジェンダID",
+  "cardId": "カードID",
+  "text": "カード本文",
+  "author": "作成者",
+  "order": "表示順",
+  "at": "作成日時（UNIXタイムスタンプ：ミリ秒）"
+}
 ```
 
 ## カードの更新
@@ -187,7 +410,75 @@ curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${you
 
 ### Response
 ```.json
-{"meetingId": "ミーティングID", "agendaId": "アジェンダID", "cardId": "カードID"}
+{
+  "meetingId": "ミーティングID",
+  "agendaId": "アジェンダID",
+  "cardId": "カードID"
+}
+```
+
+---
+
+## メッセージ一覧の取得
+### Request
+#### Method/Path
+
+| Method | Path |
+|---|---|
+| GET | /meetings/:meetingId/messages |
+
+#### Parameters
+
+| Key | Value | Required |
+|---|---|---|---|
+| page | ページ番号。1ページから始まる。 |  |
+| limit | 1ページあたりの件数。デフォルトは20件。 |  |
+
+#### Sample
+```
+curl -X GET -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}"  https://ten.minmeeting.com/api/meetings/${yourMeetingId}/messages
+```
+
+### Response
+```.json
+{
+  "meetingId": "ミーティングID",
+  "messages": [
+    {
+      "messageId": "メッセージID",
+      "text": "メッセージ本文",
+      "author": "作成者",
+      "at": "作成日時（UNIXタイムスタンプ：ミリ秒）"
+    }
+  ]
+}
+```
+
+## メッセージの取得
+### Request
+#### Method/Path
+
+| Method | Path |
+|---|---|
+| GET | /meetings/:meetingId/messages/:messageId |
+
+#### Parameters
+なし
+
+#### Sample
+```
+curl -X GET -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yourApiToken}"  https://ten.minmeeting.com/api/meetings/${yourMeetingId}/messages/${messageId}
+```
+
+### Response
+```.json
+{
+  "meetingId": "ミーティングID",
+  "messageId": "メッセージID",
+  "text": "メッセージ本文",
+  "author": "作成者",
+  "at": "作成日時（UNIXタイムスタンプ：ミリ秒）"
+}
 ```
 
 ## メッセージの投稿
@@ -214,7 +505,13 @@ curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yo
 
 ### Response
 ```.json
-{"meetingId": "ミーティングID", "messageId": "メッセージID", "text": "メッセージ本文", "author": "作成者", "at": "作成日時（UNIXタイムスタンプ：ミリ秒）"}
+{
+  "meetingId": "ミーティングID",
+  "messageId": "メッセージID",
+  "text": "メッセージ本文",
+  "author": "作成者",
+  "at": "作成日時（UNIXタイムスタンプ：ミリ秒）"
+}
 ```
 
 ## メッセージの更新
