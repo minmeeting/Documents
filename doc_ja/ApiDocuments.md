@@ -20,6 +20,7 @@ https://ten.minmeeting.com
 1. 左メニュー＞設定＞API発行
 
 - 匿名認証ではAPIの発行はできません。
+- 2018年4月1日時点で、セキュリティ強化のためAPIトークンの形式が変わりました。大変お手数ですが、設定画面よりAPIトークンを再発行してください。
 
 ## APIのベースURLと認証方式（共通ヘッダー）
 ### ベースURL
@@ -37,7 +38,7 @@ https://ten.minmeeting.com/api
 
 | 名称 | パス | 対応種類 |
 |---|---|---|
-| meeting作成 | /meetings | POST, PUT |
+| ミーティング | /meetings | POST, PUT |
 | アジェンダ | /meetings/:meetingId/agendas | Webhook（将来）, POST, PUT |
 | カード | /meetings/:meetingId/agendas/:agendaId/cards | Webhook（将来）, POST, PUT |
 | タイムラインのメッセージ | /meetings/:meetingId/messages | Webhook, POST, PUT |
