@@ -80,7 +80,7 @@ curl -X GET -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${you
 {
   "statistics": {
     "title": "ミーティングタイトル",
-    "durationInMillisec"; "会議時間（ミリ秒）",
+    "durationInMillisec": "会議時間（ミリ秒）",
     "estimatedInMillisec": "会議予定時間（ミリ秒）",
     "messagesCount": "メッセージ件数（発言数）",
     "cardsCount": "カード件数（議事録としてアジェンダ上に整理された件数）",
