@@ -68,7 +68,6 @@ https://ten.minmeeting.com/api
 | Key | Value | Required |
 |---|---|---|
 | requestAgendas | true: アジェンダデータを取得する。 false（または指定なし）: アジェンダデータを取得しない。 |  |
-| requestCards | true: カードデータを取得する。false（または指定なし）: カードデータを取得しない。 |  |
 
 #### Sample
 ```
