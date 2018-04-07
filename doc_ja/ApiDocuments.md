@@ -139,6 +139,7 @@ curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yo
 ### Response
 ```.json
 {
+  "meetingId": "yourMeetingId",
   "url":"https://ten.minmeeting.com/meetings/xxxxxx/token/xxxxxx"
 }
 ```
@@ -178,6 +179,7 @@ curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${you
 ### Response
 ```.json
 {
+  "meetingId": "yourMeetingId",
   "url":"https://ten.minmeeting.com/meetings/xxxxxx/token/xxxxxx"
 }
 ```
@@ -292,13 +294,6 @@ curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${you
 | Method | Path |
 |---|---|
 | GET | /meetings/:meetingId/agendas/:agendaId/cards |
-
-#### Parameters
-
-| Key | Value | Required |
-|---|---|---|---|
-| page | ページ番号。1ページから始まる。 |  |
-| limit | 1ページあたりの件数。デフォルトは20件。 |  |
 
 #### Sample
 ```
@@ -430,9 +425,9 @@ curl -X PUT -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${you
 #### Parameters
 
 | Key | Value | Required |
-|---|---|---|---|
-| page | ページ番号。1ページから始まる。 |  |
-| limit | 1ページあたりの件数。デフォルトは20件。 |  |
+|---|---|---|
+| olderThan | 前のページの一番古いデータの作成日時（前ページのoldestTimestampを指定する。UNIXタイムスタンプ：ミリ秒） |  |
+| limit | 1ページあたりの件数。デフォルトは20件。上限は200件。 |  |
 
 #### Sample
 ```
@@ -443,6 +438,7 @@ curl -X GET -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${you
 ```.json
 {
   "meetingId": "ミーティングID",
+  "oldestTimestamp": "一番古いデータのタイムスタンプ（UNIXタイムスタンプ：ミリ秒）"
   "messages": [
     {
       "messageId": "メッセージID",
