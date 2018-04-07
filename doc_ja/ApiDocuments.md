@@ -39,8 +39,8 @@ https://ten.minmeeting.com/api
 | 名称 | パス | 対応種類 |
 |---|---|---|
 | ミーティング | /meetings | Webhook（※将来）, GET（※）, POST, PUT |
-| アジェンダ | /meetings/:meetingId/agendas | Webhook（※将来）, GET（※）, POST, PUT |
-| カード | /meetings/:meetingId/agendas/:agendaId/cards | Webhook（※将来）, GET（※）, POST, PUT |
+| アジェンダ | /meetings/:meetingId/agendas | Webhook（※将来）, GET（※将来）, POST, PUT |
+| カード | /meetings/:meetingId/agendas/:agendaId/cards | Webhook（※将来）, GET（※将来）, POST, PUT |
 | タイムラインのメッセージ | /meetings/:meetingId/messages | Webhook（※）, GET（※）, POST, PUT |
 
 「将来」と書いてあるAPIは現在まだ対応していません。
