@@ -119,6 +119,7 @@ curl -X GET -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${you
 
 | Key | SubKey | Value | Type | Required |
 |---|---|---|---|---|
+| title | - | ミーティングタイトル | string |  |
 | agendas | - | アジェンダ一覧 | array |  |
 | - | title | アジェンダタイトル。最大100文字。 | string | ○ |
 | - | duration | アジェンダの予定時間（分）。最大60分。 | number |  |
@@ -158,6 +159,7 @@ curl -X POST -H "Content-Type:application/json" -H "X-Minmeeting-API-Token: ${yo
 #### Body
 | Key | SubKey | Value | Type | Required |
 |---|---|---|---|---|
+| title | - | ミーティングタイトル | string |  |
 | agendas | - | アジェンダ一覧 | array |  |
 | - | title | アジェンダタイトル。最大100文字。 | string | ○ |
 | - | duration | アジェンダの予定時間（分）。最大60分。 | number |  |
